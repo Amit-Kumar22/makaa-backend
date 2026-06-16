@@ -16,6 +16,7 @@ const enquiryRoutes = require('./routes/enquiryRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const whyChooseUsRoutes = require('./routes/whyChooseUsRoutes');
 
 // Initialize Express app
 const app = express();
@@ -82,6 +83,7 @@ app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/why-choose-us', whyChooseUsRoutes);
 
 // 404 handler
 app.use((req, res) => {
