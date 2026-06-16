@@ -3,7 +3,7 @@ const teamMembers = [
     name: "Dr. Shahid Habib",
     role: "Founder & CEO",
     email: "ceo@sisharglobal.com",
-    image: "/team/shahid-habib.jpg",
+    image: "/team/shahid-habib.png",
   },
   {
     name: "Safiur Rahman",
@@ -60,11 +60,11 @@ export default function TeamSection() {
               className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               {/* Image */}
-              <div className="h-56 overflow-hidden">
+              <div className="h-72 bg-white flex items-center justify-center">
                 <img
                   src={member.image}
                   alt={member.name}
-                  className="w-full h-full object-cover hover:scale-105 transition duration-500"
+                  className="w-full h-full object-contain transition duration-500"
                 />
               </div>
 

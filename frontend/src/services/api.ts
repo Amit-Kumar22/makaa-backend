@@ -35,6 +35,24 @@ export const productApi = {
     }),
 };
 
+
+//why choose us APIs
+export const whyChooseUsApi = {
+  getAll: () => api.get('/api/why-choose-us'),
+  getAdminAll: () => api.get('/api/why-choose-us/admin'),
+  getById: (id: string) => api.get(`/api/why-choose-us/${id}`),
+
+  create: (data: any) =>
+    api.post('/api/why-choose-us', data),
+
+  update: (id: string, data: any) =>
+    api.put(`/api/why-choose-us/${id}`, data),
+
+  delete: (id: string) =>
+    api.delete(`/api/why-choose-us/${id}`),
+};
+
+
 // Enquiry APIs
 export const enquiryApi = {
   create: (data: any) => api.post('/api/enquiry', data),

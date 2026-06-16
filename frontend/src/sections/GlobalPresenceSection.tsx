@@ -13,6 +13,10 @@ export default function GlobalPresenceSection() {
     'Kuwait',
     'Europe',
     'Africa',
+    'Nepal',
+    'Bangladesh',
+    'USA',
+
   ];
 
   return (

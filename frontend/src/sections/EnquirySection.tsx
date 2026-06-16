@@ -13,6 +13,7 @@ interface FormData {
   email: string;
   phone: string;
   city: string;
+  country: string;
   productRequirement: string;
   message: string;
 }
@@ -24,6 +25,7 @@ export default function EnquirySection() {
     email: '',
     phone: '',
     city: '',
+    country: '',
     productRequirement: '',
     message: '',
   });
@@ -47,6 +49,7 @@ export default function EnquirySection() {
         email: '',
         phone: '',
         city: '',
+        country: '',
         productRequirement: '',
         message: '',
       });
@@ -59,19 +62,19 @@ export default function EnquirySection() {
 
   return (
     <section id="enquiry" className="py-12 bg-gradient-to-b from-dark-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4">
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="rounded-lg border border-dark-100 bg-white p-4 shadow-2xl"
+            className="rounded-xl border border-dark-100 bg-white p-5 shadow-lg"
           >
             <div className="mb-8">
               <p className="text-sm uppercase tracking-[0.3em] text-primary-600">Get in Touch</p>
-              <h2 className="mt-4 text-2xl font-bold text-dark-900">Request a Quote or Ask a Question</h2>
-              <p className="mt-3 text-sm text-dark-600 leading-7">
+              <h2 className="mt-2 text-xl md:text-2xl font-bold text-dark-900">Request a Quote or Ask a Question</h2> 
+              <p className="mt-2 text-sm text-dark-600 leading-6">
                 Our team is ready to help you source premium maize for feed, food processing and industrial applications. Submit your enquiry and receive a fast, personalized response.
               </p>
             </div>
@@ -84,74 +87,121 @@ export default function EnquirySection() {
               onSubmit={handleSubmit}
               className="space-y-6"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                {/* Full Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-dark-900 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-dark-900 mb-1">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                    placeholder="Your Name"
+                    className="w-full h-10 rounded-lg border border-dark-200 bg-dark-50 px-3 text-sm"
                   />
                 </div>
+
+                {/* Email */}
                 <div>
-                  <label className="block text-sm font-semibold text-dark-900 mb-2">Email</label>
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
                     placeholder="your@email.com"
                   />
                 </div>
+
+                {/* Phone */}
                 <div>
-                  <label className="block text-sm font-semibold text-dark-900 mb-2">Phone</label>
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    Phone
+                  </label>
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
                     placeholder="+91 98765 43210"
                   />
                 </div>
+
+                {/* City */}
                 <div>
-                  <label className="block text-sm font-semibold text-dark-900 mb-2">City</label>
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    City
+                  </label>
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
                     placeholder="Your City"
                   />
                 </div>
+
+                {/* Country */}
+                <div>
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
+                    placeholder="Your Country"
+                  />
+                </div>
+
+                {/* Quantity */}
+                <div>
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    Quantity
+                  </label>
+                  <input
+                    type="text"
+                    name="quantity"
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
+                    placeholder="e.g. 10 MT"
+                  />
+                </div>
+
+                {/* Product Requirement - Full Width */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-dark-900 mb-2">
+                    Product Requirement
+                  </label>
+                  <select
+                    name="productRequirement"
+                    value={formData.productRequirement}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm"
+                  >
+                    <option value="">Select Product</option>
+                    <option value="Maize">Maize</option>
+                    <option value="Yellow Corn">Yellow Corn</option>
+                    <option value="Animal Feed">Animal Feed</option>
+                  </select>
+                </div>
+
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-dark-900 mb-2">Product Requirement</label>
-                <select
-                  name="productRequirement"
-                  value={formData.productRequirement}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-lg border border-dark-200 bg-dark-50 px-3 py-2 text-sm text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                >
-                  <option value="">Select Product</option>
-                  <option value="Feed Maize">Feed Maize</option>
-                  <option value="Food Grade">Food Grade</option>
-                  <option value="Industrial Grade">Industrial Grade</option>
-                  <option value="Premium Selection">Premium Selection</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
+
 
               <div>
                 <label className="block text-sm font-semibold text-dark-900 mb-2">Message</label>

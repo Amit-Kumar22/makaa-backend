@@ -64,7 +64,11 @@ export default function ExportProcessSection() {
               </div>
 
               {index !== steps.length - 1 && (
-                <div className="hidden lg:block w-8 h-[2px] bg-accent-400 mx-2" />
+                <div className="hidden lg:flex items-center mx-2">
+                  <div className="w-8 h-[2px] bg-accent-400 relative">
+                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-b-[5px] border-l-[8px] border-t-transparent border-b-transparent border-l-accent-400"></div>
+                  </div>
+                </div>
               )}
             </motion.div>
           ))}

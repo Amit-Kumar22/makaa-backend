@@ -13,7 +13,9 @@ import {
   FiMenu,
   FiX,
   FiChevronDown,
+  FiAward,
 } from 'react-icons/fi';
+
 
 export default function AdminSidebar() {
   const router = useRouter();
@@ -43,6 +45,7 @@ export default function AdminSidebar() {
   const menuItems = [
     { icon: FiHome, label: 'Dashboard', href: '/admin/dashboard' },
     { icon: FiPackage, label: 'Products', href: '/admin/products' },
+    { icon: FiAward, label: 'Why Choose Us', href: '/admin/why-choose-us' },
     { icon: FiMessageSquare, label: 'Enquiries', href: '/admin/enquiries' },
     { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
   ];
@@ -63,11 +66,9 @@ export default function AdminSidebar() {
       <motion.aside
         initial={{ x: -300 }}
         animate={{ x: isOpen ? 0 : 0 }}
-        className={`${
-          isOpen ? 'fixed' : 'hidden'
-        } lg:relative lg:block w-64 bg-dark-900 text-white h-screen flex flex-col z-40 transition-all duration-300 ${
-          isCollapsed ? 'lg:w-20' : 'lg:w-64'
-        }`}
+        className={`${isOpen ? 'fixed' : 'hidden'
+          } lg:relative lg:block w-64 bg-dark-900 text-white h-screen flex flex-col z-40 transition-all duration-300 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'
+          }`}
       >
         {/* Logo */}
         <div className="p-6 border-b border-dark-700 flex items-center justify-between">
@@ -85,11 +86,10 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-                isActive(item.href)
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive(item.href)
                   ? 'bg-primary-600 text-white'
                   : 'text-dark-300 hover:bg-dark-800'
-              }`}
+                }`}
             >
               <item.icon size={20} />
               {!isCollapsed && <span>{item.label}</span>}
