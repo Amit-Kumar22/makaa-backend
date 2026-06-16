@@ -86,7 +86,10 @@ export default function ContactSection() {
   const whatsappLink = contact?.whatsapp ? `https://wa.me/${formatNumber(contact.whatsapp)}` : `https://wa.me/${formatNumber(contact?.phone)}`;
 
   return (
-    <section id="contact" className="py-12 bg-gradient-to-b from-dark-50 to-white">
+    <section
+      id="contact"
+      className="scroll-mt-24 py-12 bg-gradient-to-b from-dark-50 to-white"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -104,15 +107,39 @@ export default function ContactSection() {
         <div className="grid gap-4 md:grid-cols-2 mb-8">
 
           {/* Phone */}
+          {/* Phone + Language */}
           <div className="group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-50 text-primary-600 shrink-0">
               <FiPhone size={24} />
             </div>
 
-            <div>
+            <div className="w-full">
               <h4 className="font-semibold text-dark-900 text-lg">Phone</h4>
-              <p className="text-dark-600">{contact?.phone || '+91 98765 43210'}</p>
-              <p className="text-xs text-dark-500 mt-1">Mon - Fri, 9 AM - 6 PM</p>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-1">
+                <p className="text-dark-600 font-medium">
+                  {contact?.phone || '+91 98765 43210'}
+                </p>
+
+                <select
+                  className="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-dark-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  defaultValue="en"
+                >
+                  <option value="en">🇺🇸 English</option>
+                  <option value="hi">🇮🇳 Hindi</option>
+                  <option value="gu">🇮🇳 Gujarati</option>
+                  <option value="mr">🇮🇳 Marathi</option>
+                  <option value="ta">🇮🇳 Tamil</option>
+                  <option value="te">🇮🇳 Telugu</option>
+                  <option value="bn">🇮🇳 Bengali</option>
+                  <option value="pa">🇮🇳 Punjabi</option>
+                  <option value="ur">🇮🇳 Urdu</option>
+                </select>
+              </div>
+
+              <p className="text-xs text-dark-500 mt-2">
+                Mon - Fri, 9 AM - 6 PM
+              </p>
             </div>
           </div>
 

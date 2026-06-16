@@ -46,7 +46,7 @@ export default function AboutSection() {
             className="pt-2"
           >
             <Image
-              src="/about-sishar.png"
+              src="/about-sishar1.png"
               alt="SISHAR Global Export Products"
               width={700}
               height={500}

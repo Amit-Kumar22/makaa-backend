@@ -23,13 +23,12 @@ export default function Navbar() {
 
 
   const navItems = [
-    { label: 'Home', href: '/#home' },
-    { label: 'About Us', href: '/#about' },
-    { label: 'Products', href: '/#products' },
-    { label: 'Why Choose Us', href: '/#why' },
-    { label: 'Enquiry', href: '/#enquiry' },
-    { label: 'Contact', href: '/#contact' },
-    //  { label: "Our Team", href: "/#team" }
+    { label: 'Home', href: '#home' },
+    { label: 'About Us', href: '#about' },
+    { label: 'Products', href: '#products' },
+    { label: 'Why Choose Us', href: '#why' },
+    { label: 'Enquiry', href: '#enquiry' },
+    { label: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -48,10 +47,10 @@ export default function Navbar() {
               <Image
                 src="/logo.png"
                 alt="SISHAR Global"
-                width={250}
-                height={100}
+                width={350}
+                height={150}
                 className="h-14 w-auto object-contain"
-                
+
               />
             </Link>
           </div>
@@ -59,13 +58,13 @@ export default function Navbar() {
           {/* Menu Center */}
           <div className="hidden md:flex justify-center items-center gap-6">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.label}
                 href={item.href}
-                className="font-medium whitespace-nowrap transition-colors ..."
+                className="font-medium whitespace-nowrap"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -92,31 +91,25 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
+      {/* Mobile Menu */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="md:hidden bg-white shadow-lg"
+          className="md:hidden bg-white shadow-lg relative z-[9999]"
         >
-          <div className="px-4 py-4 space-y-3">
+          <div className="flex flex-col px-4 py-4 gap-4">
             {navItems.map((item) => (
-              <Link
+              <a
                 key={item.label}
                 href={item.href}
-                className="block text-dark-900 hover:text-primary-600 font-medium"
+                className="block w-full py-2 text-lg font-medium text-dark-900 hover:text-primary-600 cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
-            <Link
-              href="/admin-login"
-              className="block bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium text-center transition"
-              onClick={() => setIsOpen(false)}
-            >
-              Admin Login
-            </Link>
           </div>
         </motion.div>
       )}
