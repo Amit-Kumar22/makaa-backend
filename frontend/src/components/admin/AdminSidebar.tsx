@@ -14,6 +14,8 @@ import {
   FiX,
   FiChevronDown,
   FiAward,
+  FiCheckSquare,
+  FiShoppingCart,
 } from 'react-icons/fi';
 
 
@@ -28,7 +30,7 @@ export default function AdminSidebar() {
       ? localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
       : null;
     if (!token) {
-      router.push('/admin-login');
+      router.push('/login');
     }
   }, [router]);
 
@@ -39,14 +41,16 @@ export default function AdminSidebar() {
       sessionStorage.removeItem('adminToken');
       sessionStorage.removeItem('adminUser');
     }
-    router.replace('/');
+    router.replace('/login');
   };
 
   const menuItems = [
     { icon: FiHome, label: 'Dashboard', href: '/admin/dashboard' },
     { icon: FiPackage, label: 'Products', href: '/admin/products' },
     { icon: FiAward, label: 'Why Choose Us', href: '/admin/why-choose-us' },
-    { icon: FiMessageSquare, label: 'Enquiries', href: '/admin/enquiries' },
+    { icon: FiCheckSquare, label: 'Certifications', href: '/admin/certifications' },
+    { icon: FiShoppingCart, label: 'Shop Enquiries', href: '/admin/product-enquiries' },
+    { icon: FiMessageSquare, label: 'Contact Enquiries', href: '/admin/enquiries' },
     { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
   ];
 

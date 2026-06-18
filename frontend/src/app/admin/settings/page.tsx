@@ -39,7 +39,7 @@ export default function ContactManagement() {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      router.push('/admin-login');
+      router.push('/login');
       return;
     }
     fetchContact();
@@ -87,7 +87,7 @@ export default function ContactManagement() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-dark-900">Contact Management</h1>
         <p className="text-dark-600 mt-2">Manage your contact information and social media links</p>

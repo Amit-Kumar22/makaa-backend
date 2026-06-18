@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   FiPhone,
   FiMail,
@@ -10,56 +11,122 @@ import {
   FiInstagram,
   FiTwitter,
   FiLinkedin,
-} from 'react-icons/fi';
+} from "react-icons/fi";
+
+import { FaPinterest } from "react-icons/fa";
+
+const QUICK_LINKS = [
+  { label: "Home", href: "#home" },
+  { label: "About Us", href: "#about" },
+  { label: "Products", href: "#products" },
+  { label: "Why Choose Us", href: "#why" },
+  { label: "Certifications", href: "#certifications" },
+  { label: "Contact", href: "#contact" },
+];
+
+const PRODUCT_LINKS = [
+  { label: "Feed Maize", href: "#products" },
+  { label: "Food Grade Maize", href: "#products" },
+  { label: "Industrial Grade", href: "#products" },
+  { label: "Premium Selection", href: "#products" },
+  { label: "Export Grade", href: "#products" },
+];
+
+const SOCIAL = [
+  {
+    icon: FiFacebook,
+    href: "https://www.facebook.com/Sisharglobalpvtltd-101415602008680",
+    label: "Facebook",
+  },
+  {
+    icon: FiInstagram,
+    href: "https://www.instagram.com/sisharglobal?igsh=MTV3Z2FucnB0YWZ1",
+    label: "Instagram",
+  },
+  { icon: FiTwitter, href: "https://twitter.com/LtdSishar", label: "Twitter" },
+  {
+    icon: FiLinkedin,
+    href: "https://www.linkedin.com/in/shahid-habib-0a7a94207/",
+    label: "LinkedIn",
+  },
+  {
+    icon: FaPinterest,
+    href: "https://www.pinterest.com/0e2kujohperldf0hxthpsistg91yp8/_saved/",
+    label: "Pinterest",
+  },
+];
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
     <footer className="bg-dark-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          {/* Company Info */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ── Main grid ─────────────────────────────────── */}
+        <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Company branding */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="space-y-4"
           >
-            <h3 className="text-xl font-bold text-primary-400 mb-3">🌾 Makka</h3>
-            <p className="text-dark-300">
-              Premium Quality Maize Supplier for Feed, Food Processing & Industrial
-              Applications.
-            </p>
+            {/* Logo */}
+            <Link href="/" className="inline-block">
+              <Image
+                src="/logo.png"
+                alt="Makka — Premium Maize Supplier"
+                width={250}
+                height={100}
+                className="h-14 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
+
+            {/* Company name + description */}
+            <div>
+              <p className="text-sm leading-relaxed text-dark-300">
+                Premium quality maize supplier for feed, food processing &amp;
+                industrial applications. Trusted by exporters worldwide.
+              </p>
+            </div>
+
+            {/* Social icons */}
+            <div className="flex items-center gap-3 pt-1">
+              {SOCIAL.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-dark-700 text-dark-400 transition hover:border-primary-500 hover:bg-primary-600 hover:text-white"
+                >
+                  <Icon size={16} />
+                </a>
+              ))}
+            </div>
           </motion.div>
 
-          {/* Quick Links */}
+          {/* Quick links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
           >
-            <h4 className="font-semibold text-sm mb-3">Quick Links</h4>
-            <ul className="space-y-2 text-dark-300">
-              <li>
-                <Link href="#home" className="hover:text-primary-400 transition">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="#about" className="hover:text-primary-400 transition">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="#products" className="hover:text-primary-400 transition">
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link href="#enquiry" className="hover:text-primary-400 transition">
-                  Enquiry
-                </Link>
-              </li>
+            <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
+              Quick Links
+            </h4>
+            <ul className="space-y-2.5">
+              {QUICK_LINKS.map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    href={href}
+                    className="text-sm text-dark-400 transition hover:text-primary-400 hover:pl-1"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
@@ -68,85 +135,104 @@ export default function Footer() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
           >
-            <h4 className="font-semibold text-sm mb-3">Products</h4>
-            <ul className="space-y-2 text-dark-300">
-              <li>
-                <Link href="#products" className="hover:text-primary-400 transition">
-                  Feed Maize
-                </Link>
-              </li>
-              <li>
-                <Link href="#products" className="hover:text-primary-400 transition">
-                  Food Grade
-                </Link>
-              </li>
-              <li>
-                <Link href="#products" className="hover:text-primary-400 transition">
-                  Industrial Grade
-                </Link>
-              </li>
-              <li>
-                <Link href="#products" className="hover:text-primary-400 transition">
-                  Premium Selection
-                </Link>
-              </li>
+            <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
+              Our Products
+            </h4>
+            <ul className="space-y-2.5">
+              {PRODUCT_LINKS.map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    href={href}
+                    className="text-sm text-dark-400 transition hover:text-primary-400 hover:pl-1"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Contact */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
           >
-            <h4 className="font-semibold text-sm mb-3">Contact</h4>
-            <div className="space-y-3 text-dark-300">
-              <div className="flex items-center gap-2">
-                <FiPhone className="text-primary-400" />
-                <a href="tel:+919876543210" className="hover:text-primary-400 transition">
-                  +91 98765 43210
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <FiMail className="text-primary-400" />
+            <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
+              Contact Us
+            </h4>
+            <ul className="space-y-4">
+              <li>
                 <a
-                  href="mailto:info@makka.com"
-                  className="hover:text-primary-400 transition"
+                  href="tel:+91 9818205383"
+                  className="flex items-start gap-3 text-dark-400 transition hover:text-primary-400"
                 >
-                  info@makka.com
+                  <FiPhone
+                    size={16}
+                    className="mt-0.5 shrink-0 text-primary-500"
+                  />
+                  <span className="text-sm">+91 9818205383</span>
                 </a>
-              </div>
-              <div className="flex items-start gap-2">
-                <FiMapPin className="text-primary-400 mt-1" />
-                <p>Farm Road, Agriculture City, India</p>
-              </div>
-            </div>
+              </li>
+              <li>
+                <a
+                  href="mailto:info@sisharglobal.com"
+                  className="flex items-start gap-3 text-dark-400 transition hover:text-primary-400"
+                >
+                  <FiMail
+                    size={16}
+                    className="mt-0.5 shrink-0 text-primary-500"
+                  />
+                  <span className="text-sm">info@sisharglobal.com</span>
+                </a>
+              </li>
+              <li className="flex items-start gap-3 text-dark-400">
+                <FiMapPin
+                  size={16}
+                  className="mt-0.5 shrink-0 text-primary-500"
+                />
+                <span className="text-sm leading-relaxed">
+                  Farm Road, Agriculture City,
+                  <br />
+                  India
+                </span>
+              </li>
+            </ul>
           </motion.div>
         </div>
 
-        {/* Social Links */}
-        <div className="flex justify-center gap-4 py-4 border-y border-dark-700">
-          <a href="#" className="text-dark-400 hover:text-primary-400 transition">
-            <FiFacebook size={24} />
-          </a>
-          <a href="#" className="text-dark-400 hover:text-primary-400 transition">
-            <FiInstagram size={24} />
-          </a>
-          <a href="#" className="text-dark-400 hover:text-primary-400 transition">
-            <FiTwitter size={24} />
-          </a>
-          <a href="#" className="text-dark-400 hover:text-primary-400 transition">
-            <FiLinkedin size={24} />
-          </a>
-        </div>
+        {/* ── Bottom bar ────────────────────────────────── */}
+        <div className="border-t border-dark-800 py-6">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+            {/* Logo mark */}
+            <Link href="/" className="opacity-70 hover:opacity-100 transition">
+              <Image
+                src="/logo.png"
+                alt="Makka"
+                width={100}
+                height={36}
+                className="h-7 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
 
-        {/* Copyright */}
-        <div className="text-center text-dark-400 text-sm mt-4">
-          <p>
-            © {currentYear} Makka Premium Maize. All rights reserved. | Privacy Policy
-            | Terms of Service
-          </p>
+            {/* Copyright */}
+            <p className="text-center text-xs text-dark-500">
+              © {year} Copyright: © SISHAR Global Pvt. Ltd. All Rights Reserved.
+            </p>
+
+            {/* Policy links */}
+            <div className="flex gap-4 text-xs text-dark-500">
+              <a href="#" className="hover:text-dark-300 transition">
+                Privacy Policy
+              </a>
+              <a href="#" className="hover:text-dark-300 transition">
+                Terms of Service
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

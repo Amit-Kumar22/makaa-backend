@@ -14,7 +14,7 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
   const isAdminRoute = useMemo(
-    () => pathname?.startsWith('/admin') || pathname === '/admin-login',
+    () => pathname?.startsWith('/admin') || pathname === '/login',
     [pathname]
   );
 

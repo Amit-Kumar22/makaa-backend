@@ -2,136 +2,196 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { FiAward, FiUpload, FiX, FiArrowLeft } from 'react-icons/fi';
 import { whyChooseUsApi } from '@/services/api';
 
-export default function EditWhyChooseUs() {
+export default function EditWhyChooseUsPage() {
   const params = useParams();
   const router = useRouter();
+  const id = params.id as string;
 
   const [formData, setFormData] = useState({
-    sectionTitle: '',
-    heading: '',
+    title: '',
     description: '',
-    leftFeatures: '',
-    rightFeatures: '',
+    imageUrl: '',
+    displayOrder: '0',
+    isActive: true,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+    if (!token) { router.push('/login'); return; }
+    (async () => {
+      try {
+        const res = await whyChooseUsApi.getById(id);
+        const d = res.data;
+        setFormData({
+          title: d.title || '',
+          description: d.description || '',
+          imageUrl: d.imageUrl || '',
+          displayOrder: String(d.displayOrder ?? 0),
+          isActive: d.isActive ?? true,
+        });
+        setImagePreview(d.imageUrl || '');
+      } catch {
+        toast.error('Failed to load item');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id, router]);
 
-  const fetchData = async () => {
-    try {
-      const res = await whyChooseUsApi.getById(
-        params.id as string
-      );
+  useEffect(() => {
+    if (!imageFile) return;
+    const url = URL.createObjectURL(imageFile);
+    setImagePreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageFile]);
 
-      const data = res.data;
-
-      setFormData({
-        sectionTitle: data.sectionTitle || '',
-        heading: data.heading || '',
-        description: data.description || '',
-        leftFeatures: (data.leftFeatures || []).join('\n'),
-        rightFeatures: (data.rightFeatures || []).join('\n'),
-      });
-    } catch {
-      toast.error('Failed to load data');
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!formData.title.trim()) { toast.error('Title is required'); return; }
     try {
-      await whyChooseUsApi.update(
-        params.id as string,
-        {
-          sectionTitle: formData.sectionTitle,
-          heading: formData.heading,
-          description: formData.description,
-          leftFeatures:
-            formData.leftFeatures.split('\n'),
-          rightFeatures:
-            formData.rightFeatures.split('\n'),
-        }
-      );
-
-      toast.success('Updated Successfully');
-
+      setSubmitting(true);
+      let imageUrl = formData.imageUrl;
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append('image', imageFile);
+        const res = await whyChooseUsApi.uploadImage(fd);
+        imageUrl = res.data.imageUrl;
+      }
+      await whyChooseUsApi.update(id, {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        imageUrl,
+        displayOrder: Number(formData.displayOrder) || 0,
+        isActive: formData.isActive,
+      });
+      toast.success('Item updated successfully');
       router.push('/admin/why-choose-us');
-    } catch {
-      toast.error('Update Failed');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update item');
+    } finally {
+      setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-2xl mx-auto">
+        <div className="h-8 w-48 animate-pulse rounded-xl bg-slate-200 mb-6" />
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => <div key={i} className="h-12 animate-pulse rounded-xl bg-slate-200" />)}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Edit Why Choose Us
-      </h1>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
+      <div className="mb-6 flex items-center gap-3">
+        <Link href="/admin/why-choose-us" className="flex h-9 w-9 items-center justify-center rounded-full border border-dark-200 hover:bg-dark-50 transition">
+          <FiArrowLeft size={16} />
+        </Link>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-dark-900">Edit Item</h1>
+          <p className="text-dark-500 text-sm mt-0.5">Update this Why Choose Us feature card.</p>
+        </div>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow space-y-4"
-      >
-        <input
-          type="text"
-          name="sectionTitle"
-          className="w-full border p-3 rounded-lg"
-          value={formData.sectionTitle}
-          onChange={handleChange}
-        />
+      <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-dark-100 shadow-sm p-6 space-y-5">
 
-        <input
-          type="text"
-          name="heading"
-          className="w-full border p-3 rounded-lg"
-          value={formData.heading}
-          onChange={handleChange}
-        />
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            name="title" value={formData.title} onChange={handleChange}
+            className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+            placeholder="e.g. Export Quality Products"
+          />
+        </div>
 
-        <textarea
-          name="description"
-          rows={4}
-          className="w-full border p-3 rounded-lg"
-          value={formData.description}
-          onChange={handleChange}
-        />
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Description <span className="text-dark-400 text-xs">(optional)</span>
+          </label>
+          <textarea
+            name="description" value={formData.description} onChange={handleChange} rows={3}
+            className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+            placeholder="Brief description of this feature"
+          />
+        </div>
 
-        <textarea
-          name="leftFeatures"
-          rows={5}
-          className="w-full border p-3 rounded-lg"
-          value={formData.leftFeatures}
-          onChange={handleChange}
-        />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="block mb-1.5 text-sm font-medium text-dark-700">Display Order</label>
+            <input
+              type="number" min="0" name="displayOrder" value={formData.displayOrder} onChange={handleChange}
+              className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none"
+            />
+            <p className="mt-1 text-xs text-dark-400">Lower = appears first.</p>
+          </div>
+          <div className="flex flex-col justify-center">
+            <label className="block mb-1.5 text-sm font-medium text-dark-700">Visibility</label>
+            <label className="inline-flex cursor-pointer items-center gap-3">
+              <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange}
+                className="h-5 w-5 rounded border-dark-300 text-primary-600 focus:ring-primary-500"
+              />
+              <span className="text-sm text-dark-700">
+                {formData.isActive ? 'Active — visible on website' : 'Inactive — hidden'}
+              </span>
+            </label>
+          </div>
+        </div>
 
-        <textarea
-          name="rightFeatures"
-          rows={5}
-          className="w-full border p-3 rounded-lg"
-          value={formData.rightFeatures}
-          onChange={handleChange}
-        />
+        {/* Image upload */}
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Icon / Image <span className="text-dark-400 text-xs">(optional — JPG, PNG, WEBP, SVG)</span>
+          </label>
+          {imagePreview ? (
+            <div className="relative mb-3 inline-block">
+              <div className="h-32 w-32 overflow-hidden rounded-2xl border border-dark-200 bg-dark-50">
+                <img src={imagePreview} alt="Preview" className="h-full w-full object-contain p-2" />
+              </div>
+              <button type="button"
+                onClick={() => { setImageFile(null); setImagePreview(''); setFormData((p) => ({ ...p, imageUrl: '' })); }}
+                className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+              >
+                <FiX size={12} />
+              </button>
+            </div>
+          ) : (
+            <div className="mb-3 flex h-32 w-32 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-dark-200 bg-dark-50">
+              <FiAward size={28} className="text-dark-300 mb-1" />
+              <span className="text-xs text-dark-400">No image</span>
+            </div>
+          )}
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dark-300 bg-white px-4 py-2 text-sm text-dark-700 hover:bg-dark-50 transition">
+            <FiUpload size={14} />
+            {imagePreview ? 'Replace Image' : 'Upload Image'}
+            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0] ?? null; setImageFile(f); }} />
+          </label>
+        </div>
 
-        <button
-          type="submit"
-          className="bg-primary-600 text-white px-6 py-3 rounded-xl"
+        <button type="submit" disabled={submitting}
+          className="w-full rounded-2xl bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
-          Update
+          {submitting ? 'Saving…' : 'Update Item'}
         </button>
       </form>
     </div>

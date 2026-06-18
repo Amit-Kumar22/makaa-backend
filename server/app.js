@@ -17,6 +17,9 @@ const aboutRoutes = require('./routes/aboutRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const whyChooseUsRoutes = require('./routes/whyChooseUsRoutes');
+const certificationRoutes = require('./routes/certificationRoutes');
+const userRoutes = require('./routes/userRoutes');
+const productEnquiryRoutes = require('./routes/productEnquiryRoutes');
 
 // Initialize Express app
 const app = express();
@@ -84,6 +87,9 @@ app.use('/api/about', aboutRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/why-choose-us', whyChooseUsRoutes);
+app.use('/api/certifications', certificationRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/product-enquiries', productEnquiryRoutes);
 
 // 404 handler
 app.use((req, res) => {

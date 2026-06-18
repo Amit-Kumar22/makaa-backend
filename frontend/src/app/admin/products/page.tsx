@@ -22,7 +22,7 @@ export default function ProductManagement() {
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
     if (!token) {
-      router.push('/admin-login');
+      router.push('/login');
       return;
     }
     fetchProducts();
@@ -72,7 +72,7 @@ export default function ProductManagement() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-dark-900">Products Management</h1>

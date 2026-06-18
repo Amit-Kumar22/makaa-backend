@@ -32,7 +32,7 @@ export default function AboutManagement() {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      router.push('/admin-login');
+      router.push('/login');
       return;
     }
     fetchAbout();
@@ -72,7 +72,7 @@ export default function AboutManagement() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-dark-900">About Management</h1>
         <p className="text-dark-600 mt-2">Manage your company's about page content</p>

@@ -1,278 +1,163 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { FiAward, FiUpload, FiX, FiArrowLeft } from 'react-icons/fi';
 import { whyChooseUsApi } from '@/services/api';
 
-export default function NewWhyChooseUs() {
+export default function NewWhyChooseUsPage() {
   const router = useRouter();
-
   const [formData, setFormData] = useState({
-    sectionTitle: '',
-    heading: '',
+    title: '',
     description: '',
-
-    leftFeatures: '',
-    rightFeatures: '',
-
-    stat1Value: '',
-    stat1Label: '',
-
-    stat2Value: '',
-    stat2Label: '',
-
-    stat3Value: '',
-    stat3Label: '',
-
-    stat4Value: '',
-    stat4Label: '',
+    imageUrl: '',
+    displayOrder: '0',
+    isActive: true,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+    if (!token) router.push('/login');
+  }, [router]);
+
+  useEffect(() => {
+    if (!imageFile) return;
+    const url = URL.createObjectURL(imageFile);
+    setImagePreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageFile]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!formData.title.trim()) { toast.error('Title is required'); return; }
     try {
+      setSubmitting(true);
+      let imageUrl = formData.imageUrl;
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append('image', imageFile);
+        const res = await whyChooseUsApi.uploadImage(fd);
+        imageUrl = res.data.imageUrl;
+      }
       await whyChooseUsApi.create({
-        sectionTitle: formData.sectionTitle,
-        heading: formData.heading,
-        description: formData.description,
-
-        leftFeatures: formData.leftFeatures
-          .split('\n')
-          .filter(Boolean),
-
-        rightFeatures: formData.rightFeatures
-          .split('\n')
-          .filter(Boolean),
-
-        stats: [
-          {
-            value: formData.stat1Value,
-            label: formData.stat1Label,
-          },
-          {
-            value: formData.stat2Value,
-            label: formData.stat2Label,
-          },
-          {
-            value: formData.stat3Value,
-            label: formData.stat3Label,
-          },
-          {
-            value: formData.stat4Value,
-            label: formData.stat4Label,
-          },
-        ],
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        imageUrl,
+        displayOrder: Number(formData.displayOrder) || 0,
+        isActive: formData.isActive,
       });
-
-      toast.success('Content Saved Successfully');
-
+      toast.success('Item created successfully');
       router.push('/admin/why-choose-us');
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to save content');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to create item');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-dark-900">
-          Add Why Choose Us Content
-        </h1>
-
-        <p className="text-dark-600 mt-2">
-          Manage website Why Choose Us section.
-        </p>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
+      <div className="mb-6 flex items-center gap-3">
+        <Link href="/admin/why-choose-us" className="flex h-9 w-9 items-center justify-center rounded-full border border-dark-200 hover:bg-dark-50 transition">
+          <FiArrowLeft size={16} />
+        </Link>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-dark-900">Add New Item</h1>
+          <p className="text-dark-500 text-sm mt-0.5">Add a new feature card to Why Choose Us.</p>
+        </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-3xl shadow-sm border border-dark-100 p-6 space-y-6"
-      >
-        {/* Section Title */}
-        <div>
-          <label className="block font-semibold mb-2">
-            Section Title
-          </label>
+      <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-dark-100 shadow-sm p-6 space-y-5">
 
+        <div>
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Title <span className="text-red-500">*</span>
+          </label>
           <input
-            type="text"
-            name="sectionTitle"
-            placeholder="WHY CHOOSE SISHAR"
-            value={formData.sectionTitle}
-            onChange={handleChange}
-            className="w-full border rounded-xl p-3"
+            name="title" value={formData.title} onChange={handleChange}
+            className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+            placeholder="e.g. Export Quality Products"
           />
         </div>
 
-        {/* Heading */}
         <div>
-          <label className="block font-semibold mb-2">
-            Main Heading
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Description <span className="text-dark-400 text-xs">(optional)</span>
           </label>
-
-          <input
-            type="text"
-            name="heading"
-            placeholder="Your Trusted Global Trading Partner"
-            value={formData.heading}
-            onChange={handleChange}
-            className="w-full border rounded-xl p-3"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block font-semibold mb-2">
-            Description
-          </label>
-
           <textarea
-            rows={4}
-            name="description"
-            placeholder="Section description..."
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded-xl p-3"
+            name="description" value={formData.description} onChange={handleChange} rows={3}
+            className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+            placeholder="Brief description of this feature"
           />
         </div>
 
-        {/* Features */}
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className="block font-semibold mb-2">
-              Left Features
-            </label>
-
-            <textarea
-              rows={8}
-              name="leftFeatures"
-              placeholder={`Export Quality Products
-Global Shipping Solutions
-Quality Inspection`}
-              value={formData.leftFeatures}
-              onChange={handleChange}
-              className="w-full border rounded-xl p-3"
+            <label className="block mb-1.5 text-sm font-medium text-dark-700">Display Order</label>
+            <input
+              type="number" min="0" name="displayOrder" value={formData.displayOrder} onChange={handleChange}
+              className="w-full rounded-xl border border-dark-300 bg-white px-4 py-2.5 text-sm focus:border-primary-500 focus:outline-none"
             />
+            <p className="mt-1 text-xs text-dark-400">Lower = appears first.</p>
           </div>
-
-          <div>
-            <label className="block font-semibold mb-2">
-              Right Features
+          <div className="flex flex-col justify-center">
+            <label className="block mb-1.5 text-sm font-medium text-dark-700">Visibility</label>
+            <label className="inline-flex cursor-pointer items-center gap-3">
+              <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleChange}
+                className="h-5 w-5 rounded border-dark-300 text-primary-600 focus:ring-primary-500"
+              />
+              <span className="text-sm text-dark-700">
+                {formData.isActive ? 'Active — visible on website' : 'Inactive — hidden'}
+              </span>
             </label>
-
-            <textarea
-              rows={8}
-              name="rightFeatures"
-              placeholder={`Trusted Supplier Network
-Competitive Pricing
-Customer-Centric Service`}
-              value={formData.rightFeatures}
-              onChange={handleChange}
-              className="w-full border rounded-xl p-3"
-            />
           </div>
         </div>
 
-        {/* Statistics */}
+        {/* Image upload */}
         <div>
-          <h2 className="text-xl font-bold mb-4">
-            Statistics
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="stat1Value"
-              placeholder="50+"
-              value={formData.stat1Value}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat1Label"
-              placeholder="Countries Served"
-              value={formData.stat1Label}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat2Value"
-              placeholder="100+"
-              value={formData.stat2Value}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat2Label"
-              placeholder="Global Clients"
-              value={formData.stat2Label}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat3Value"
-              placeholder="500+"
-              value={formData.stat3Value}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat3Label"
-              placeholder="Shipments"
-              value={formData.stat3Label}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat4Value"
-              placeholder="99%"
-              value={formData.stat4Value}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-
-            <input
-              type="text"
-              name="stat4Label"
-              placeholder="Client Satisfaction"
-              value={formData.stat4Label}
-              onChange={handleChange}
-              className="border rounded-xl p-3"
-            />
-          </div>
+          <label className="block mb-1.5 text-sm font-medium text-dark-700">
+            Icon / Image <span className="text-dark-400 text-xs">(optional — JPG, PNG, WEBP, SVG)</span>
+          </label>
+          {imagePreview ? (
+            <div className="relative mb-3 inline-block">
+              <div className="h-32 w-32 overflow-hidden rounded-2xl border border-dark-200 bg-dark-50">
+                <img src={imagePreview} alt="Preview" className="h-full w-full object-contain p-2" />
+              </div>
+              <button type="button" onClick={() => { setImageFile(null); setImagePreview(''); setFormData((p) => ({ ...p, imageUrl: '' })); }}
+                className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+              >
+                <FiX size={12} />
+              </button>
+            </div>
+          ) : (
+            <div className="mb-3 flex h-32 w-32 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-dark-200 bg-dark-50">
+              <FiAward size={28} className="text-dark-300 mb-1" />
+              <span className="text-xs text-dark-400">No image</span>
+            </div>
+          )}
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dark-300 bg-white px-4 py-2 text-sm text-dark-700 hover:bg-dark-50 transition">
+            <FiUpload size={14} />
+            {imagePreview ? 'Replace Image' : 'Upload Image'}
+            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0] ?? null; setImageFile(f); }} />
+          </label>
         </div>
 
-        <button
-          type="submit"
-          className="bg-primary-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary-700 transition"
+        <button type="submit" disabled={submitting}
+          className="w-full rounded-2xl bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
-          Save Content
+          {submitting ? 'Saving…' : 'Create Item'}
         </button>
       </form>
     </div>

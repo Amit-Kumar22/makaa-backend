@@ -2,20 +2,84 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+
+const SLIDES = ['/hero-bg.png', '/hero-bg2.png', '/hero-bg3.jpg'];
 
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % SLIDES.length);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
+
+  const goPrev = () => {
+    setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    startTimer();
+  };
+
+  const goNext = () => {
+    setCurrent((prev) => (prev + 1) % SLIDES.length);
+    startTimer();
+  };
+
   return (
     <section
       id="home"
       className="relative min-h-[100svh] overflow-hidden"
     >
-      {/* Background Video */}
-      <div
-        className="absolute inset-0 bg-cover bg-top bg-no-repeat"
-        style={{
-          backgroundImage: "url('/hero-bg.png')",
-        }}
-      />
+      {/* Background Carousel */}
+      {SLIDES.map((src, i) => (
+        <div
+          key={src}
+          className="absolute inset-0 bg-cover bg-top bg-no-repeat transition-opacity duration-1000"
+          style={{
+            backgroundImage: `url('${src}')`,
+            opacity: i === current ? 1 : 0,
+          }}
+        />
+      ))}
+
+      {/* Arrow Buttons */}
+      <button
+        onClick={goPrev}
+        className="absolute left-4 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition"
+        aria-label="Previous slide"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-5 w-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </button>
+      <button
+        onClick={goNext}
+        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition"
+        aria-label="Next slide"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-5 w-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </button>
+
+      {/* Dot Indicators */}
+      <div className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 flex gap-2">
+        {SLIDES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { setCurrent(i); startTimer(); }}
+            className={`h-2 w-2 rounded-full transition-all duration-300 ${i === current ? 'bg-white w-5' : 'bg-white/50'}`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
 
 
       {/* Dark Overlay */}

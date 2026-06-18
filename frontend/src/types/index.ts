@@ -58,6 +58,71 @@ export interface AdminUser {
   name: string;
 }
 
+export interface Certification {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  pdfUrl?: string;
+  pdfName?: string;
+  pdfSize?: number;
+  certificateNumber?: string;
+  recipientName?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  organizationName?: string;
+  certStatus?: 'Active' | 'Expired' | 'Pending' | 'N/A';
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  organization?: string;
+  createdAt: string;
+}
+
+export type ProductEnquiryStatus = 'New' | 'Contacted' | 'Follow Up' | 'Interested' | 'Converted' | 'Closed';
+
+export interface ProductEnquiry {
+  _id: string;
+  userId: string;
+  productId?: string;
+  productName: string;
+  productCategory?: string;
+  productPrice?: string;
+  userName: string;
+  mobile: string;
+  email: string;
+  city?: string;
+  state?: string;
+  organizationName?: string;
+  status: ProductEnquiryStatus;
+  notes?: string;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WhyChooseUsItem {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
